@@ -3076,26 +3076,4 @@ class AtScale:
         import atscale.db.iris
         self.database = atscale.db.iris.Iris(atscale_connection_id=atscale_connection_id, username=username, host=host,
                                              namespace=namespace, driver=driver, schema=schema, port=port)
-
-
-logging.basicConfig(format="%(asctime)s %(levelname)s:%(message)s",
-    datefmt="%m/%d/%Y %I:%M:%S %p",
-    level=logging.INFO,
-)
-project = AtScale(
-        server='http://ec2-18-237-5-120.us-west-2.compute.amazonaws.com',
-        username='tyler.furrier',
-        organization='default',
-        project_id='a1df41d6-af67-4073-44c0-329b07945f46',
-        model_id='f99aafe3-66ac-4df6-5096-1305cef92aa1',
-        password='tjf'
-    )
-project.create_db_connection_snowflake(
-        atscale_connection_id='Snowflake',
-        username='atscale',
-        account='da37161',
-        warehouse='SE_DEMO_JL_XSMALL',
-        database='SE_DEMO_LIBRARY',
-        schema='DBG_TABLES')
-project.database.add_table(table_name='random_test_table', dataframe=pd.DataFrame([1,2,3,4]), chunksize=None, if_exists='fail')
-print(project.database.get_database_name())
+    
