@@ -1,4 +1,5 @@
 import logging
+import os
 
 import pandas as pd
 import requests
@@ -8,18 +9,22 @@ import json
 import uuid
 import getpass
 from datetime import datetime, timedelta
-from atscale.db.database import Database
-from .errors import UserError
+import db.database
+from db.database import Database
+from utils import Aggs
+from errors import UserError
 
+agg = Aggs() #used for faster aggregation entry for create_aggregate_feature
 
 class AtScale:
     """Acts as an interface to a cube on the server.
 
     :var str `~AtScale.server`: The server to connect to.
-    :var str `~AtScale.username`: The AtScale username to log in with.
     :var str `~AtScale.organization`: The name of the organization.
     :var str `~AtScale.project_id`: The id of the project.
     :var str `~AtScale.model_id`: The id of the model.
+    :var str `~AtScale.token`: The token used for authentication
+    :var str `~AtScale.username`: The AtScale username to log in with.
     :var str `~AtScale.password`: The password for the user. Defaults to 'None' to enter via prompt.
     :var str `~AtScale.design_center_server_port`: The port the design center is listening on. Defaults to '10500'.
     :var str `~AtScale.engine_port`: The port the engine is listening on. Defaults to '10502.
@@ -27,26 +32,29 @@ class AtScale:
 
     __version__ = '0.3.1'
 
-    def __init__(self, server, username, organization, project_id, model_id, password=None, design_center_server_port='10500',
-                 engine_port='10502'):
+    def __init__(self, server, organization, project_id, model_id, token=None,
+                 username=None, password=None, design_center_server_port='10500', engine_port='10502'):
 
         self.server = server
-        self.username = username
         self.design_center_server_port = design_center_server_port
         self.engine_port = engine_port
         self.organization = organization
         self.project_id = project_id
         self.model_id = model_id
-        self.token = None
         self.project_name = None
         self.model_name = None
         self.project_json = None
-        if password is None:
-            self.password = getpass.getpass(prompt='Password: ')
-        else:
-            self.password = password
-        self.headers = ''
-        self.refresh_token()
+        self.token = token
+        self.username = username
+        if self.token is None: #only prompt password and use temp token if token not given
+            if self.username is None:
+                raise UserError('You must pass in a token or alternatively a username to log in with')
+            elif password is None:
+                self.password = getpass.getpass(prompt='Password: ')
+            else:
+                self.password = password
+            self.refresh_token()
+        self.headers = {'Content-type': 'application/json', 'Authorization': f'Bearer {self.token}'}
 
         self.database = None
 
@@ -92,6 +100,11 @@ class AtScale:
     def refresh_token(self):
         """ Refreshes the API token.
         """
+        if self.username is None:
+            logging.info('You can not refresh the token if you logged in with a token, log in with username and '
+                            'password or get a new token online')
+        elif self.password is None:
+            self.password = getpass.getpass(prompt=f'AtScale Password for username {self.username}: ')
         logging.debug('Refreshing API token')
         header = {'Content-type': 'application/json'}
         url = f'{self.server}:{self.design_center_server_port}/{self.organization}/auth'
@@ -161,6 +174,7 @@ class AtScale:
         url = f'{self.server}:{self.design_center_server_port}/api/1.0/org/{self.organization}/project/{self.project_id}'
         response = requests.get(url, headers=self.headers)
         if response.status_code == 401:
+            logging.info('Invalid authentication, if you created this instance with a token, you need a new one')
             self.refresh_token()
             response = requests.get(url, headers=self.headers)
         if response.status_code == 200:
@@ -182,6 +196,7 @@ class AtScale:
         url = f'{self.server}:{self.engine_port}/projects/published/orgId/{self.organization}'
         response = requests.get(url, headers=self.headers)
         if response.status_code == 401:
+            logging.info('Invalid authentication, if you created this instance with a token, you need a new one')
             self.refresh_token()
             response = requests.get(url, headers=self.headers)
         if response.status_code == 200:
@@ -207,6 +222,7 @@ class AtScale:
         response = requests.put(url, data=json.dumps(project_json), headers=self.headers)
 
         if response.status_code == 401:
+            logging.info('Invalid authentication, if you created this instance with a token, you need a new one')
             self.refresh_token()
             response = requests.put(url, data=json.dumps(project_json), headers=self.headers)
         try:
@@ -256,6 +272,7 @@ class AtScale:
         url = f'{self.server}:{self.design_center_server_port}/api/1.0/org/{self.organization}/project/{self.project_id}'
         response = requests.get(f'{url}/clone', headers=self.headers)
         if response.status_code == 401:
+            logging.info('Invalid authentication, if you created this instance with a token, you need a new one')
             self.refresh_token()
             response = requests.get(f'{url}/clone', headers=self.headers)
         if response.status_code == 200:
@@ -824,6 +841,7 @@ class AtScale:
         response = requests.post(f'{self.server}:{self.engine_port}/query/orgId/{self.organization}/submit',
                                  data=json_data, headers=self.headers)
         if response.status_code == 401 or response.status_code == 403:
+            logging.info('Invalid authentication, if you created this instance with a token, you need a new one')
             self.refresh_token()
             response = requests.post(
                 f'{self.server}:{self.engine_port}/query/orgId/{self.organization}/submit', data=json_data,
@@ -1368,7 +1386,7 @@ class AtScale:
         :param str dataset_name: The dataset containing the column that the feature will use.
         :param str column: The column that the feature will use.
         :param str name: What the feature will be called.
-        :param str aggregation_type: What aggregation method to use for the feature. Example: Aggs.MAX
+        :param str aggregation_type: What aggregation method to use for the feature. Example: agg.MAX
                                      Valid options include 'SUM', 'AVG', 'MAX', 'MIN', 'DC',
                                      'DCE', 'NDC', 'STDDEV_SAMP', 'STDDEV_POP', 'VAR_SAMP',
                                      and 'VAR_POP' or any field in atscale.utils.Aggs
@@ -2883,6 +2901,7 @@ class AtScale:
 
         response = requests.get(url, headers=self.headers)
         if response.status_code == 401:
+            logging.info('Invalid authentication, if you created this instance with a token, you need a new one')
             self.refresh_token()
             response = requests.get(url, headers=self.headers)
         if response.status_code == 200:
@@ -3074,4 +3093,3 @@ class AtScale:
         import atscale.db.iris
         self.database = atscale.db.iris.Iris(atscale_connection_id=atscale_connection_id, username=username, host=host,
                                              namespace=namespace, driver=driver, schema=schema, port=port)
-    

@@ -5,7 +5,7 @@ import pandas
 import pandas as pd
 
 
-from .database import Database
+from database import Database
 
 class Redshift(Database):
     """

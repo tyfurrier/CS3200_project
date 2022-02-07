@@ -16,10 +16,10 @@ REQUIRED = [
 
 GBQ_REQUIRED = ['sqlalchemy>=1.4.29', 'pybigquery>=0.10.2', 'pandas_gbq>=0.16.0']
 DATABRICKS_REQUIRED = ['sqlalchemy>=1.4.29']
-IRIS_REQUIRED = ['pyodbc>=4.0.0']
+IRIS_REQUIRED = ['pyodbc>=4.0.32']
 REDSHIFT_REQUIRED = ['sqlalchemy>=1.4.29', 'sqlalchemy-redshift>=0.8.9']
 SNOWFLAKE_REQUIRED = ['sqlalchemy>=1.4.29', 'snowflake-sqlalchemy>=1.3.3']
-SYNAPSE_REQUIRED = ['pyodbc>=4.0.0']
+SYNAPSE_REQUIRED = ['pyodbc>=4.0.32']
 ATSPARK_REQUIRED = ['pyspark>=3.1.2']
 DEV_REQUIRED = GBQ_REQUIRED + DATABRICKS_REQUIRED + IRIS_REQUIRED + REDSHIFT_REQUIRED \
                + SNOWFLAKE_REQUIRED + SYNAPSE_REQUIRED + ATSPARK_REQUIRED + ['IPython']

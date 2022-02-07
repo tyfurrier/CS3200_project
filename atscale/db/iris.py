@@ -4,7 +4,7 @@ import logging
 import pandas
 import pandas as pd
 
-from .database import Database
+from database import Database
 
 
 class Iris(Database):

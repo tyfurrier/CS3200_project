@@ -3,7 +3,7 @@ import logging
 
 import pandas as pd
 
-from .database import Database
+from database import Database
 
 
 class Snowflake(Database):
