@@ -52,6 +52,7 @@ class BigQuery(Database):
                 :param string if_exists: what to do if the table exists. Valid inputs are 'append', 'replace', and 'fail'.
                 Defaults to 'fail'.
                 """
+        from sqlalchemy import create_engine
         if_exists = if_exists.lower()
         if if_exists not in ['append', 'replace', 'fail']:
             raise Exception(f'Invalid value for parameter \'if_exists\': {if_exists}. '
@@ -72,6 +73,7 @@ class BigQuery(Database):
         :return: The queried data.
         :rtype: pandas.DataFrame
         """
+        from sqlalchemy import create_engine
         engine = create_engine(self.connection_string)
         connection = engine.connect()
         df = pd.read_sql_query(db_query, connection)

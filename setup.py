@@ -11,7 +11,6 @@ REQUIRES_PYTHON = '>=3.8.0'
 REQUIRED = [
         'pandas>=1.3.5',
         'requests>=2.27.1',
-        'pyspark>=3.1.2',
         'colorama>=0.4.4',
         ]
 
@@ -21,8 +20,9 @@ IRIS_REQUIRED = ['pyodbc>=4.0.0']
 REDSHIFT_REQUIRED = ['sqlalchemy>=1.4.29', 'sqlalchemy-redshift>=0.8.9']
 SNOWFLAKE_REQUIRED = ['sqlalchemy>=1.4.29', 'snowflake-sqlalchemy>=1.3.3']
 SYNAPSE_REQUIRED = ['pyodbc>=4.0.0']
+ATSPARK_REQUIRED = ['pyspark>=3.1.2']
 DEV_REQUIRED = GBQ_REQUIRED + DATABRICKS_REQUIRED + IRIS_REQUIRED + REDSHIFT_REQUIRED \
-               + SNOWFLAKE_REQUIRED + SYNAPSE_REQUIRED
+               + SNOWFLAKE_REQUIRED + SYNAPSE_REQUIRED + + ATSPARK_REQUIRED + ['IPython']
 EXTRAS_REQUIRE = {
             'dev': DEV_REQUIRED,
             'gbq': GBQ_REQUIRED,

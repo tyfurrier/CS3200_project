@@ -52,6 +52,7 @@ class Synapse(Database):
         :param int chunksize: the number of rows to insert at a time. Defaults to None to use default value for database.
         :param string if_exists: what to do if the table exists. Valid inputs are 'append', 'replace', and 'fail'. Defaults to 'fail'.
         """
+        import pyodbc as po
         if_exists = if_exists.lower()
         if if_exists not in ['append', 'replace', 'fail']:
             raise Exception(f'Invalid value for parameter \'if_exists\': {if_exists}. '
@@ -137,6 +138,7 @@ class Synapse(Database):
         :return: The queried data.
         :rtype: pandas.DataFrame
         """
+        import pyodbc as po
         connection = po.connect(self.connection_string, autocommit=True)
         df = pd.read_sql_query(db_query, connection)
         return df

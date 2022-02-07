@@ -49,6 +49,7 @@ class Databricks(Database):
                 :param int chunksize: the number of rows to insert at a time. Defaults to None to use default value for database.
                 :param string if_exists: what to do if the table exists. Valid inputs are 'append', 'replace', and 'fail'. Defaults to 'fail'.
                 """
+        from sqlalchemy import create_engine
         if_exists = if_exists.lower()
         if if_exists not in ['append', 'replace', 'fail']:
             raise Exception(f'Invalid value for parameter \'if_exists\': {if_exists}. '
@@ -127,6 +128,7 @@ class Databricks(Database):
         :return: The queried data.
         :rtype: pandas.DataFrame
         """
+        from sqlalchemy import create_engine
         engine = create_engine(self.connection_string, connect_args={'http_path': self.http_path,
                                                                      'driver_path': self.driver})
         connection = engine.connect()

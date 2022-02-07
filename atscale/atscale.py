@@ -2827,8 +2827,7 @@ class AtScale:
                 if filter_string != ' WHERE (':
                     filter_string += ' and '
                 if not isinstance(value[0], (int, float, bool)):
-                    filter_string += '(`{}`.`{}` BETWEEN \'{}\' and \'{}\')'.format(self.model_name, key, value[0],
-                                                                                    value[1])
+                    filter_string += f'(`{self.model_name}`.`{key}` BETWEEN \'{value[0]}\' and \'{value[1]}\')'
                 else:
                     filter_string += f'(`{self.model_name}`.`{key}` BETWEEN {value[0]} and {value[1]})'
             for key in filter_null:
