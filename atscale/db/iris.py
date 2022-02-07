@@ -63,7 +63,7 @@ class Iris(Database):
         if chunksize is None:
             chunksize=250
         if int(chunksize) < 1:
-            from atscale.utils import UserError
+            from atscale.errors import UserError
             raise UserError('Chunksize must be greater than 0, or not passed as a parameter to use default value')
 
         conversion_dict_iris = {
@@ -101,14 +101,14 @@ class Iris(Database):
                 types[i] = conversion_dict_iris['<class \'str\'>']
 
         if not cursor.tables(table=table_name, tableType='TABLE').fetchone():
-            operation = "CREATE TABLE \"{}\".\"{}\" (".format(self.db_schema, table_name)
+            operation = "CREATE TABLE \"{}\".\"{}\" (".format(self.schema, table_name)
             for key, value in types.items():
                 operation += "\"{}\" {}, ".format(key, value)
             operation = operation[:-2]
             operation += ")"
             cursor.execute(operation)
 
-        operation = "INSERT INTO \"{}\".\"{}\" (".format(self.db_schema, table_name)
+        operation = "INSERT INTO \"{}\".\"{}\" (".format(self.schema, table_name)
         for col in dataframe.columns:
             operation += "\"{}\", ".format(col)
         operation = operation[:-2]

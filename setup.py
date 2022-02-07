@@ -4,7 +4,7 @@ from setuptools import setup
 NAME = 'atscale'
 DESCRIPTION = 'A package containing AI-link from AtScale and its accompanying tools, To-Do\'s: require LICENSE, ' \
                   'add README'
-URL = 'https://github.com/tyfurrier/AI-link'
+URL = 'https://github.com/tyfurrier/packaged_api'
 AUTHOR = 'AtScale'
 REQUIRES_PYTHON = '>=3.8.0'
 
@@ -15,7 +15,7 @@ REQUIRED = [
         'colorama>=0.4.4',
         ]
 
-GBQ_REQUIRED = ['sqlalchemy>=1.4.29', 'pybigquery>=0.10.2']
+GBQ_REQUIRED = ['sqlalchemy>=1.4.29', 'pybigquery>=0.10.2', 'pandas_gbq>=0.16.0']
 DATABRICKS_REQUIRED = ['sqlalchemy>=1.4.29']
 IRIS_REQUIRED = ['pyodbc>=4.0.0']
 REDSHIFT_REQUIRED = ['sqlalchemy>=1.4.29', 'sqlalchemy-redshift>=0.8.9']

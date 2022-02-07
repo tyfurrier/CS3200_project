@@ -64,7 +64,7 @@ class Redshift(Database):
         if chunksize is None:
             chunksize=1000
         if int(chunksize) < 1:
-            from atscale.utils import UserError
+            from atscale.errors import UserError
             raise UserError('Chunksize must be greater than 0 or not passed in to use default value')
 
         df = dataframe.copy()

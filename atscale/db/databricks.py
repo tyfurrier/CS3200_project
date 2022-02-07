@@ -15,7 +15,6 @@ class Databricks(Database):
         :param str atscale_connection_id: The connection name for the warehouse in AtScale.
         :param str token: The database token.
         :param str host: The host.
-        :param str database: The database name.
         :param str http_path: The database HTTP path.
         :param str driver: The Databricks driver to use.
         :param str port: The database port (defaults to 443).

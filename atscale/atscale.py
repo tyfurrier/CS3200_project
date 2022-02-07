@@ -9,7 +9,7 @@ import uuid
 import getpass
 from datetime import datetime, timedelta
 from atscale.db.database import Database
-from utils import UserError
+from .errors import UserError
 
 
 class AtScale:
@@ -1212,7 +1212,6 @@ class AtScale:
         :param str dataset_name: The dataset the calculated column will be derived in.
         :param str name: The name of the column.
         :param str expression: The SQL expression for the column.
-        :param str data_type: The data type of the column.
         :param bool publish: Whether or not the updated project should be published. Defaults to True.
         """
 
@@ -2656,7 +2655,7 @@ class AtScale:
         if int(chunksize) < 1:
             raise UserError('Chunksize must be greater than 0 or \'None\' to use default value')
         else:
-            self.database.add_table(df, table_name, chunksize=chunksize, if_exists=if_exists)
+            self.database.add_table(dataframe=dataframe, table_name=table_name, chunksize=chunksize, if_exists=if_exists)
         logging.warning('ATSCALE.py will deprecate write_dataframe_to_db in the future, '
                         'use self.database.add_table() instead')
 
