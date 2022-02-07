@@ -9,7 +9,6 @@ import json
 import uuid
 import getpass
 from datetime import datetime, timedelta
-import db.database
 from db.database import Database
 from utils import Aggs
 from errors import UserError
